@@ -1,8 +1,6 @@
 import express from "express"
 import cors from "cors"
 import { adminRouter } from "./Routes/AdminRoute.js"
-import con from "./utils/db.js"
-
 
 
 const app = express()
@@ -14,6 +12,7 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use("/auth", adminRouter)
+
 
 
 app.get("/getemp",(req, res)=>{

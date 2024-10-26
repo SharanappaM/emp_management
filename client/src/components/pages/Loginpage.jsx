@@ -1,17 +1,27 @@
 import React, { useState } from 'react'
-import { Box, Button, Card, Stack, TextField } from "@mui/material"
+import { Box, Button, Card, Stack, TextField, Typography } from "@mui/material"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const Loginpage = () => {
     const [values, setValues] = useState({
         email: "",
         password: ""
     })
+    const [error, setError] = useState(null)
+    const navigate = useNavigate()
+    axios.defaults.withCredentials= true; // store cookies in 
 
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post("http://localhost:5050/auth/adminlogin", values)
-            .then(res => console.log(res))
+            .then(res => {
+                if (res.data.loginStatus) {
+                    navigate("/dashboard")
+                } else {
+                    setError(res.data.error)
+                }
+            })
             .catch(error => console.log(error))
 
 
@@ -34,6 +44,7 @@ const Loginpage = () => {
                         autoComplete="off"
 
                     >
+                        <Typography> {error && error}</Typography>
                         <h3>Login</h3>
                         <TextField
                             id="filled-hidden-label-normal"
