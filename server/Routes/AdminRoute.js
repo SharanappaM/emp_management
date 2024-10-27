@@ -1,6 +1,9 @@
 import express from "express"
 import con from "../utils/db.js";
 import jwt from "jsonwebtoken"
+import bcrypt, { hash } from "bcrypt"
+import multer from "multer"
+import path from "path"
 
 
 const router = express.Router();
@@ -30,18 +33,64 @@ router.post("/adminlogin", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/addCategory", (req, res) => {
     const q = "INSERT INTO category (`name`) VALUES (?)";
     // const q = "INSERT INTO employee (`id`,`des`,`name`,`passwoprd`,`phone`,`sal`) VALUES (?)";
 
+
     const values = [
-        raddCategoryeq.body.category
+        req.body.category
     ]
     con.query(q, values, (err, result) => {
         if (err) return res.json({ status: false, error: "Query Error" })
         return res.json({ status: true, msg: "Category Created" })
     })
 })
+
+
+// iamge upload 
+const storage = multer.diskStorage({
+    destination:(req, file, cb)=>{
+        cb(null, "public/images")
+    },
+    filename:(req,file,cb)=>{
+        cb(null, file.fieldname +"_"+Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage:storage
+})
+
+// end image eupload
+
+router.post("/addEmployees", upload.single("emp_image"), (req, res) => {
+    const q = "INSERT INTO employees (`name`,`email`,`password`,`salary`,`address`,`category_id`, `emp_image`) VALUES (?)";
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) return res.json({ status: false, error: "Query Error" })
+        const values = [
+            req.body.name,
+            req.body.email,
+            hash,
+            req.body.salary,
+            req.body.address,
+            req.body.category_id,
+            req.file.filename,
+
+        ]
+
+        con.query(q, [values], (err, result) => {
+            if (err) return res.json({ status: false, error: "Query Error" })
+            return res.json({ status: true, msg: "Category Created" })
+        })
+
+    })
+
+
+  
+})
+
+
 
 
 
