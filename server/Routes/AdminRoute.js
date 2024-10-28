@@ -101,6 +101,13 @@ router.get("/listCategorys", (req, res) => {
         return res.json({ result })
     })
 })
+router.get("/listEmployees", (req, res) => {
+    const q = "SELECT * FROM employees";
+    con.query(q, (err, result) => {
+        if (err) return res.json({ status: false, msg: "quey error" })
+        return res.json({ result })
+    })
+})
 
 
 

@@ -1,10 +1,11 @@
-import { Box, Button, IconButton, List, ListItem, ListItemButton, Modal, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, IconButton, List, ListItem, ListItemButton, Modal, Stack, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-
+import DataTable, { } from "react-data-table-component"
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AddIcon from '@mui/icons-material/Add';
 
 const style = {
     position: 'absolute',
@@ -61,6 +62,27 @@ const Category = () => {
             })
     }
 
+    const columns = [
+        {
+            name: 'SL No',
+            selector: (row, index) => index + 1,
+            sortable: true,
+            width: "150px"
+        },
+        {
+            name: 'Category Id',
+            selector: row => row.id,
+            sortable: true,
+            width: "150px"
+        },
+        {
+            name: 'Name',
+            selector: row => row.name,
+            sortable: true,
+            width: "auto"
+        },
+    ]
+
 
     return (
         <div>
@@ -69,8 +91,13 @@ const Category = () => {
                 <ToastContainer position='bottom-right' />
             </div>
 
-            <Button onClick={() => setOpenAddCategory(true)}>Add Category</Button>
+            <br />
 
+            <Button color='secondary' variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAddCategory(true)}>
+                Add Category
+            </Button>
+            <br />
+            <br />
 
 
 
@@ -109,24 +136,13 @@ const Category = () => {
                 </Box>
             </Modal>
 
-
-            <Box sx={{
-                width:"50%",
-                bgcolor:"lightgray",
-                minHeight:"10vh",
-                // overflow:"auto"
-            }}>
-                <Typography variant='h5'>Categort List</Typography>
-                <List disablePadding >
-                    {categoryList.map((item, index) => (
-                        // <li key={index}>{item.name}</li>
-                        <ListItemButton>
-                            <ListItem>{item.name}</ListItem>
-                        </ListItemButton>
-
-                    ))}
-                </List>
-            </Box>
+            <Card>
+                <DataTable
+                    title="Categort List"
+                    columns={columns}
+                    data={categoryList}
+                />
+            </Card>
 
 
         </div>

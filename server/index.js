@@ -12,6 +12,7 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use("/auth", adminRouter)
+app.use(express.static("public"))
 
 
 

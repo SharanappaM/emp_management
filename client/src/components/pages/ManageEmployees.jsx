@@ -1,10 +1,12 @@
-import { Box, Button, FormControl, IconButton, InputLabel, List, ListItem, ListItemButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, FormControl, IconButton, InputLabel, List, ListItem, ListItemButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DataTable from 'react-data-table-component';
+import AddIcon from '@mui/icons-material/Add';
 
 const style = {
   position: 'absolute',
@@ -33,6 +35,20 @@ const ManageEmployees = () => {
 
   })
 
+  const [employeesList, setEmployeesList] = useState([])
+
+  const getEmployeesList = () => {
+    axios.get("http://localhost:5050/auth/listEmployees")
+      .then(res => {
+        console.log(res.data);
+        setEmployeesList(res.data.result)
+
+      }).then(err => {
+        console.log(err);
+
+      })
+  }
+
   const [categoryList, setCategoryList] = useState([])
 
   const getCategoryList = () => {
@@ -48,6 +64,7 @@ const ManageEmployees = () => {
   }
 
   useEffect(() => {
+    getEmployeesList()
     getCategoryList()
   }, [openAddEmployees])
 
@@ -55,13 +72,13 @@ const ManageEmployees = () => {
     e.preventDefault()
 
     const newFormData = new FormData();
-    newFormData.append("name",formData.name)
-    newFormData.append("email",formData.email)
-    newFormData.append("password",formData.password)
-    newFormData.append("salary",formData.salary)
-    newFormData.append("address",formData.address)
-    newFormData.append("category_id",formData.category_id)
-    newFormData.append("emp_image",formData.emp_image)
+    newFormData.append("name", formData.name)
+    newFormData.append("email", formData.email)
+    newFormData.append("password", formData.password)
+    newFormData.append("salary", formData.salary)
+    newFormData.append("address", formData.address)
+    newFormData.append("category_id", formData.category_id)
+    newFormData.append("emp_image", formData.emp_image)
     axios.post("http://localhost:5050/auth/addEmployees", newFormData)
       .then(res => {
         if (res.data.status) {
@@ -81,14 +98,85 @@ const ManageEmployees = () => {
   }
 
 
+
+  const columns = [
+    {
+      name: 'SL No',
+      selector: (row, index) => index + 1,
+      sortable: true,
+      width: "150px"
+    },
+    {
+      name: 'Name',
+      selector: row => row.name,
+      sortable: true,
+      width: "150px"
+    },
+    {
+      name: 'Email',
+      selector: row => row.email,
+      sortable: true,
+      width: "auto"
+    },
+    {
+      name: 'Salary',
+      selector: row => row.salary,
+      sortable: true,
+      width: "auto"
+    },
+    {
+      name: 'Address',
+      selector: row => row.address,
+      sortable: true,
+      width: "auto"
+    },
+    {
+      name: 'Category Id',
+      selector: row => row.category_id,
+      sortable: true,
+      width: "auto"
+    },
+    {
+      name: 'Iamge',
+      selector: (row)=>(
+        <div>
+              <img src={`http://localhost:5050/images/${row.emp_image}`} width="50px" alt="" />
+        </div>
+      ),
+      sortable: true,
+      width: "auto"
+    },
+    {
+      name: 'Action',
+      selector: (row) => (
+        <div>
+          <Button>Edit</Button>
+          <Button>Delete</Button>
+        </div>
+      ),
+      sortable: true,
+      width: "auto"
+    },
+
+
+  ]
+
   return (
     <div>
 
       <div>
         <ToastContainer position='bottom-right' />
       </div>
+  
 
-      <Button onClick={() => setOpenAddEmployees(true)}>Add Employees</Button>
+
+      <br />
+
+      <Button color='secondary' variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAddEmployees(true)}>
+        Add Employees
+      </Button>
+      <br />
+      <br />
 
 
 
@@ -174,7 +262,7 @@ const ManageEmployees = () => {
 
               <br />
               <InputLabel id="demo-simple-select-standard-label">Select Image </InputLabel>
-              <input type="file" name='emp_image'  onChange={(e) => setfoarmData({ ...formData, emp_image: e.target.files[0] })} />
+              <input type="file" name='emp_image' onChange={(e) => setfoarmData({ ...formData, emp_image: e.target.files[0] })} />
               <br />
 
               <Button type='submit' sx={{ mt: 2 }} color='primary' variant='contained' >Submit</Button>
@@ -187,23 +275,13 @@ const ManageEmployees = () => {
       </Modal>
 
 
-      <Box sx={{
-        width: "50%",
-        bgcolor: "lightgray",
-        minHeight: "10vh",
-        // overflow:"auto"
-      }}>
-        <Typography variant='h5'>Employeses List</Typography>
-        <List disablePadding >
-          {categoryList.map((item, index) => (
-            // <li key={index}>{item.name}</li>
-            <ListItemButton>
-              <ListItem>{item.name}</ListItem>
-            </ListItemButton>
-
-          ))}
-        </List>
-      </Box>
+      <Card>
+        <DataTable
+          title="Emplooyes List"
+          columns={columns}
+          data={employeesList}
+        />
+      </Card>
 
 
     </div>
