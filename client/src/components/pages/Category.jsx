@@ -93,7 +93,7 @@ const Category = () => {
 
             <br />
 
-            <Button color='secondary' variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAddCategory(true)}>
+            <Button color='success' variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAddCategory(true)}>
                 Add Category
             </Button>
             <br />

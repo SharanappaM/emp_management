@@ -138,9 +138,9 @@ const ManageEmployees = () => {
     },
     {
       name: 'Iamge',
-      selector: (row)=>(
+      selector: (row) => (
         <div>
-              <img src={`http://localhost:5050/images/${row.emp_image}`} width="50px" alt="" />
+          <img src={`http://localhost:5050/images/${row.emp_image}`} width="50px" alt="" />
         </div>
       ),
       sortable: true,
@@ -151,7 +151,7 @@ const ManageEmployees = () => {
       selector: (row) => (
         <div>
           <Button>Edit</Button>
-          <Button>Delete</Button>
+          <Button onClick={()=>handelDeleteEmp(row.id)} >Delete</Button>
         </div>
       ),
       sortable: true,
@@ -161,19 +161,39 @@ const ManageEmployees = () => {
 
   ]
 
+  const handelDeleteEmp = (employeesList) => {
+  
+    axios.delete("http://localhost:5050/auth/employees/"+employeesList)
+      .then(res => {
+        if (res.data.status) {
+          window.location.reload();
+          console.log(res.data.msg);
+          toast.success(res.data.msg)
+
+        } else {
+          alert(res.data.msg+"delete");
+
+        }
+
+      }).then(err => {
+        console.log(err);
+
+      })
+  }
+
   return (
     <div>
 
       <div>
         <ToastContainer position='bottom-right' />
       </div>
-  
+
 
 
       <br />
 
-      <Button color='secondary' variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAddEmployees(true)}>
-        Add Employees
+      <Button color='success' variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAddEmployees(true)}>
+        Add Employee
       </Button>
       <br />
       <br />
@@ -277,7 +297,7 @@ const ManageEmployees = () => {
 
       <Card>
         <DataTable
-          title="Emplooyes List"
+          title="Employees List"
           columns={columns}
           data={employeesList}
         />

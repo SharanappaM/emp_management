@@ -109,6 +109,15 @@ router.get("/listEmployees", (req, res) => {
     })
 })
 
+router.delete("/employees/:id",(req,res)=>{
+    const empId = req.params.id;
+    const q = "DELETE FROM employees WHERE id = ?";
+    con.query(q,[empId], (err, data)=>{
+        if (err) return res.json({ status: false, msg: "quey error" })
+            return res.json({ status: true, msg: "Employee Deleted..! " })
+    })
+})
+
 
 
 export { router as adminRouter }
