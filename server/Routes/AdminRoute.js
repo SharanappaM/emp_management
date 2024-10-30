@@ -75,7 +75,7 @@ router.post("/addEmployees", upload.single("emp_image"), (req, res) => {
             req.body.salary,
             req.body.address,
             req.body.category_id,
-            req.file.filename,
+            req.file.filename ,
 
         ]
 
@@ -90,6 +90,25 @@ router.post("/addEmployees", upload.single("emp_image"), (req, res) => {
   
 })
 
+
+// edit emp
+
+router.put("/editEmployees/:id", (req, res) => {
+    const empId = req.params.id;
+    const q = "UPDATE  employees SET `name`=? ,`email`=? ,`salary`=?,`address`=?,`category_id`=?  WHERE id=?";
+   
+    const values = [
+        req.body.name,
+        req.body.email,
+        req.body.salary,
+        req.body.address,
+        req.body.category_id,
+    ]
+    con.query(q,[...values,empId], (err, result) => {
+        if (err) return res.json({ status: false, error: "Query Error" })
+        return res.json({ status: true, msg: "Categor edited" })
+    })
+})
 
 
 

@@ -1,4 +1,4 @@
-import { Box, Button, Card, FormControl, IconButton, InputLabel, List, ListItem, ListItemButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, Card, FormControl, IconButton, InputLabel, List, ListItem, ListItemButton, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -23,8 +23,9 @@ const style = {
 const ManageEmployees = () => {
 
   const [openAddEmployees, setOpenAddEmployees] = useState(false)
-
-  const [formData, setfoarmData] = useState({
+  const [openEditEmployees, setOpenEditEmployees] = useState(false)
+  const [empId, setEmpId] = useState(null)
+  const [addEmployeFoarmData, setAddEmployeFoarmData] = useState({
     name: null,
     email: null,
     password: null,
@@ -34,14 +35,35 @@ const ManageEmployees = () => {
     emp_image: null
 
   })
-
   const [employeesList, setEmployeesList] = useState([])
+
+  
+  const [editEmployeFoarmData, setEditEmployeFoarmData] = useState({
+    name: null,
+    email: null,
+    salary: null,
+    address: null,
+    category_id: null,
+
+
+  })
+
+  
 
   const getEmployeesList = () => {
     axios.get("http://localhost:5050/auth/listEmployees")
       .then(res => {
         console.log(res.data);
         setEmployeesList(res.data.result)
+     
+        
+        // setEditEmployeFoarmData({
+        //   name: res.data.result[0].name,
+        //   email: res.data.result[0].email,
+        //   salary: res.data.result[0].salary,
+        //   address: res.data.result[0].address,
+        //   category_id: res.data.result[0].category_id,
+        // })
 
       }).then(err => {
         console.log(err);
@@ -66,19 +88,21 @@ const ManageEmployees = () => {
   useEffect(() => {
     getEmployeesList()
     getCategoryList()
-  }, [openAddEmployees])
+  }, [openAddEmployees, openEditEmployees])
 
   const handelAddCategorySubmit = (e) => {
     e.preventDefault()
 
     const newFormData = new FormData();
-    newFormData.append("name", formData.name)
-    newFormData.append("email", formData.email)
-    newFormData.append("password", formData.password)
-    newFormData.append("salary", formData.salary)
-    newFormData.append("address", formData.address)
-    newFormData.append("category_id", formData.category_id)
-    newFormData.append("emp_image", formData.emp_image)
+    newFormData.append("name", addEmployeFoarmData.name)
+    newFormData.append("email", addEmployeFoarmData.email)
+    newFormData.append("password", addEmployeFoarmData.password)
+    newFormData.append("salary", addEmployeFoarmData.salary)
+    newFormData.append("address", addEmployeFoarmData.address)
+    newFormData.append("category_id", addEmployeFoarmData.category_id)
+    newFormData.append("emp_image", addEmployeFoarmData.emp_image)
+
+
     axios.post("http://localhost:5050/auth/addEmployees", newFormData)
       .then(res => {
         if (res.data.status) {
@@ -95,6 +119,33 @@ const ManageEmployees = () => {
         console.log(err);
 
       })
+  }
+  const handelEditCategorySubmit = (e) => {
+    e.preventDefault()
+
+
+
+    axios.put("http://localhost:5050/auth/editEmployees/" + empId, editEmployeFoarmData)
+      .then(res => {
+        if (res.data.status) {
+          setOpenEditEmployees(false)
+          console.log(res.data.msg);
+          toast.success(res.data.msg)
+
+        } else {
+          alert(res.data.error);
+
+        }
+
+      }).then(err => {
+        console.log(err);
+
+      })
+  }
+
+  const handelEditEmp = (employeesList) => {
+    setEmpId(employeesList)
+    setOpenEditEmployees(true)
   }
 
 
@@ -140,7 +191,8 @@ const ManageEmployees = () => {
       name: 'Iamge',
       selector: (row) => (
         <div>
-          <img src={`http://localhost:5050/images/${row.emp_image}`} width="50px" alt="" />
+         <Avatar alt="Remy Sharp" src={`http://localhost:5050/images/${row.emp_image}`} />
+          {/* <img  width="50px" alt="" /> */}
         </div>
       ),
       sortable: true,
@@ -150,8 +202,8 @@ const ManageEmployees = () => {
       name: 'Action',
       selector: (row) => (
         <div>
-          <Button>Edit</Button>
-          <Button onClick={()=>handelDeleteEmp(row.id)} >Delete</Button>
+          <Button onClick={() => handelEditEmp(row.id)}>Edit</Button>
+          <Button onClick={() => handelDeleteEmp(row.id)} >Delete</Button>
         </div>
       ),
       sortable: true,
@@ -162,8 +214,8 @@ const ManageEmployees = () => {
   ]
 
   const handelDeleteEmp = (employeesList) => {
-  
-    axios.delete("http://localhost:5050/auth/employees/"+employeesList)
+
+    axios.delete("http://localhost:5050/auth/employees/" + employeesList)
       .then(res => {
         if (res.data.status) {
           window.location.reload();
@@ -171,7 +223,7 @@ const ManageEmployees = () => {
           toast.success(res.data.msg)
 
         } else {
-          alert(res.data.msg+"delete");
+          alert(res.data.msg + "delete");
 
         }
 
@@ -180,6 +232,7 @@ const ManageEmployees = () => {
 
       })
   }
+
 
   return (
     <div>
@@ -224,7 +277,8 @@ const ManageEmployees = () => {
                 variant="standard"
                 type='text'
                 fullWidth
-                onChange={(e) => setfoarmData({ ...formData, name: e.target.value })}
+                
+                onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, name: e.target.value })}
               />
               <TextField
                 id="filled-hidden-label-normal"
@@ -232,7 +286,7 @@ const ManageEmployees = () => {
                 variant="standard"
                 type='text'
                 fullWidth
-                onChange={(e) => setfoarmData({ ...formData, email: e.target.value })}
+                onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, email: e.target.value })}
               />
               <TextField
                 id="filled-hidden-label-normal"
@@ -240,7 +294,7 @@ const ManageEmployees = () => {
                 variant="standard"
                 type='text'
                 fullWidth
-                onChange={(e) => setfoarmData({ ...formData, password: e.target.value })}
+                onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, password: e.target.value })}
               />
               <TextField
                 id="filled-hidden-label-normal"
@@ -248,7 +302,7 @@ const ManageEmployees = () => {
                 variant="standard"
                 type='text'
                 fullWidth
-                onChange={(e) => setfoarmData({ ...formData, salary: e.target.value })}
+                onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, salary: e.target.value })}
               />
               <TextField
                 id="filled-hidden-label-normal"
@@ -256,13 +310,13 @@ const ManageEmployees = () => {
                 variant="standard"
                 type='text'
                 fullWidth
-                onChange={(e) => setfoarmData({ ...formData, address: e.target.value })}
+                onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, address: e.target.value })}
               />
 
               <FormControl fullWidth variant="standard"  >
                 <InputLabel id="demo-simple-select-standard-label"> Category</InputLabel>
                 <Select
-                  onChange={(e) => setfoarmData({ ...formData, category_id: e.target.value })}
+                  onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, category_id: e.target.value })}
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
                   // value={age}
@@ -282,8 +336,94 @@ const ManageEmployees = () => {
 
               <br />
               <InputLabel id="demo-simple-select-standard-label">Select Image </InputLabel>
-              <input type="file" name='emp_image' onChange={(e) => setfoarmData({ ...formData, emp_image: e.target.files[0] })} />
+              <input type="file" name='emp_image' onChange={(e) => setAddEmployeFoarmData({ ...addEmployeFoarmData, emp_image: e.target.files[0] })} />
               <br />
+
+              <Button type='submit' sx={{ mt: 2 }} color='primary' variant='contained' >Submit</Button>
+            </Box>
+
+          </form>
+
+
+        </Box>
+      </Modal>
+
+
+
+      <Modal
+        open={openEditEmployees}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Box display="flex" justifyContent="space-between">
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Edit Employese
+            </Typography>
+            <IconButton color='error' onClick={() => setOpenEditEmployees(false)} >
+              <CancelIcon />
+            </IconButton>
+          </Box>
+
+          <form action="" onSubmit={handelEditCategorySubmit}>
+            <Box>
+              <TextField
+                id="filled-hidden-label-normal"
+                label="Name"
+                variant="standard"
+                type='text'
+                value={editEmployeFoarmData.name}
+                fullWidth
+                onChange={(e) => setEditEmployeFoarmData({ ...editEmployeFoarmData, name: e.target.value })}
+              />
+              <TextField
+                id="filled-hidden-label-normal"
+                label="Email"
+                variant="standard"
+                type='text'
+                fullWidth
+                onChange={(e) => setEditEmployeFoarmData({ ...editEmployeFoarmData, email: e.target.value })}
+              />
+
+              <TextField
+                id="filled-hidden-label-normal"
+                label="Salray"
+                variant="standard"
+                type='text'
+                fullWidth
+                onChange={(e) => setEditEmployeFoarmData({ ...editEmployeFoarmData, salary: e.target.value })}
+              />
+              <TextField
+                id="filled-hidden-label-normal"
+                label="Address"
+                variant="standard"
+                type='text'
+                fullWidth
+                onChange={(e) => setEditEmployeFoarmData({ ...editEmployeFoarmData, address: e.target.value })}
+              />
+
+              <FormControl fullWidth variant="standard"  >
+                <InputLabel id="demo-simple-select-standard-label"> Category</InputLabel>
+                <Select
+                  onChange={(e) => setEditEmployeFoarmData({ ...editEmployeFoarmData, category_id: e.target.value })}
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  // value={age}
+                  // onChange={handleChange}
+                  label="Category"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {
+                    categoryList.map((item, index) => (
+                      <MenuItem value={item.id}>{item.name}</MenuItem>
+                    ))
+                  }
+                </Select>
+              </FormControl>
+
+
 
               <Button type='submit' sx={{ mt: 2 }} color='primary' variant='contained' >Submit</Button>
             </Box>

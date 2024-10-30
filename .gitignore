@@ -38,3 +38,5 @@ ehthumbs.db
 yarn-error.log
 .pnp/
 .pnp.js
+*.png
+*.jpg
