@@ -33,6 +33,25 @@ router.post("/adminlogin", (req, res) => {
     });
 });
 
+router.get("/listCategorys", (req, res) => {
+    const q = "SELECT * FROM category";
+    con.query(q, (err, result) => {
+        if (err) return res.json({ status: false, msg: "quey error" })
+        return res.json({ result })
+    })
+})
+
+
+
+router.get("/getAdmins",(resq, res)=>{
+    const q = "SELECT * FROM admin";
+    con.query(q, (err,result)=>{
+        if(err) return res.json({status:false, msg :"Query error"})
+            return res.json({result})
+    })
+})
+
+
 router.post("/addCategory", (req, res) => {
     const q = "INSERT INTO category (`name`) VALUES (?)";
     // const q = "INSERT INTO employee (`id`,`des`,`name`,`passwoprd`,`phone`,`sal`) VALUES (?)";
