@@ -62,7 +62,7 @@ router.post("/addCategory", (req, res) => {
     ]
     con.query(q, values, (err, result) => {
         if (err) return res.json({ status: false, error: "Query Error" })
-        return res.json({ status: true, msg: "Category Created" })
+        return  
     })
 })
 
@@ -157,5 +157,10 @@ router.delete("/employees/:id",(req,res)=>{
 })
 
 
+
+router.get("/logout", (req, res)=>{
+    res.clearCookie("token")
+    return res.json({Status:true})
+})
 
 export { router as adminRouter }

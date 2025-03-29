@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Card, Stack, Tab, Tabs, TextField, Typography, } from "@mui/material"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
@@ -24,11 +24,33 @@ const Loginpage = () => {
     const navigate = useNavigate()
     axios.defaults.withCredentials = true; // store cookies in 
 
+    //   const navigate = useNavigate()
+    //   axios.defaults.withCredentials = true;
+      useEffect(() => {
+        axios.get('http://localhost:5050/verify')
+        .then(result => {
+          if(result.data.Status) {
+            if(result.data.role === "admin") {
+              navigate('/dashboard')
+            } else {
+              navigate('/empdetails/'+result.data.id)
+            }
+          }else{
+            navigate('/')
+    
+          }
+        }).catch(err =>console.log(err))
+      }, [])
+    
+
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post("http://localhost:5050/auth/adminlogin", values)
             .then(res => {
                 if (res.data.loginStatus) {
+                    localStorage.setItem("valid", true)
                     navigate("/dashboard")
                 } else {
                     setError(res.data.error)
@@ -41,10 +63,11 @@ const Loginpage = () => {
     }
     const handleSubmitEmp = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5050/emplyoee/emplyoeeLogin", values)
+        axios.post("http://localhost:5050/emplyoee/employeeLogin", values)
             .then(res => {
                 if (res.data.loginStatus) {
-                    navigate("/employeePage")
+                    localStorage.setItem("valid", true)
+                    navigate("/empdetails/"+res.data.id)
                 } else {
                     setError(res.data.error)
                 }
@@ -103,6 +126,7 @@ const Loginpage = () => {
                                     type='password'
                                     fullWidth
                                     onChange={(e) => setValues({ ...values, password: e.target.value })}
+                                        
 
                                 />
 
@@ -125,7 +149,7 @@ const Loginpage = () => {
                         ml: "20%",
                         bgcolor: "#ebdef0"
                     }}>
-                        <form action="" onSubmit={handleSubmitEmp}>
+                         <form action="" onSubmit={handleSubmitEmp}>
                             <Stack
                                 component="form"
 
@@ -135,7 +159,7 @@ const Loginpage = () => {
 
                             >
                                 <Typography> {error && error}</Typography>
-                                <h3>Emplyoee Login</h3>
+                                <h3>EMP Login</h3>
                                 <TextField
                                     id="filled-hidden-label-normal"
                                     label="Email"
@@ -151,6 +175,7 @@ const Loginpage = () => {
                                     type='password'
                                     fullWidth
                                     onChange={(e) => setValues({ ...values, password: e.target.value })}
+                                        
 
                                 />
 
