@@ -26,22 +26,22 @@ const Loginpage = () => {
 
     //   const navigate = useNavigate()
     //   axios.defaults.withCredentials = true;
-      useEffect(() => {
+    useEffect(() => {
         axios.get('http://localhost:5050/verify')
-        .then(result => {
-          if(result.data.Status) {
-            if(result.data.role === "admin") {
-              navigate('/dashboard')
-            } else {
-              navigate('/empdetails/'+result.data.id)
-            }
-          }else{
-            navigate('/')
-    
-          }
-        }).catch(err =>console.log(err))
-      }, [])
-    
+            .then(result => {
+                if (result.data.Status) {
+                    if (result.data.role === "admin") {
+                        navigate('/dashboard')
+                    } else {
+                        navigate('/empdetails/' + result.data.id)
+                    }
+                } else {
+                    navigate('/')
+
+                }
+            }).catch(err => console.log(err))
+    }, [])
+
 
 
 
@@ -67,7 +67,7 @@ const Loginpage = () => {
             .then(res => {
                 if (res.data.loginStatus) {
                     localStorage.setItem("valid", true)
-                    navigate("/empdetails/"+res.data.id)
+                    navigate("/empdetails/" + res.data.id)
                 } else {
                     setError(res.data.error)
                 }
@@ -78,121 +78,121 @@ const Loginpage = () => {
 
     }
     return (
-        <Box>
+        // <Box>
 
-            <Tabs
-                value={loginValue}
-                onChange={handleChange}
-                textColor="secondary"
-                indicatorColor="secondary"
-                aria-label="secondary tabs example"
-            >
-                <Tab value="admin" label="Admin Login" />
-                <Tab value="emp" label="Emplyoee Login" />
-                {/* <Tab value="three" label="Item Three" /> */}
-            </Tabs>
+        //     <Card sx={{
+        //         width: "50%",
+        //         padding: "5%",
+        //         ml: "20%",
+        //         bgcolor: "#ebdef0"
+        //     }}>
+        //         <form action="" onSubmit={handleSubmit}>
+        //             <Stack
+        //                 component="form"
 
-            {
-                loginValue === "admin" && (
-                    <Card sx={{
-                        width: "50%",
-                        padding: "5%",
-                        ml: "20%",
-                        bgcolor: "#ebdef0"
-                    }}>
-                        <form action="" onSubmit={handleSubmit}>
-                            <Stack
-                                component="form"
+        //                 spacing={2}
+        //                 noValidate
+        //                 autoComplete="off"
 
-                                spacing={2}
-                                noValidate
-                                autoComplete="off"
-
-                            >
-                                <Typography> {error && error}</Typography>
-                                <h3>Admin Login</h3>
-                                <TextField
-                                    id="filled-hidden-label-normal"
-                                    label="Email"
-                                    variant="standard"
-                                    type='text'
-                                    fullWidth
-                                    onChange={(e) => setValues({ ...values, email: e.target.value })}
-                                />
-                                <TextField
-                                    id="filled-hidden-label-normal"
-                                    label="Password"
-                                    variant="standard"
-                                    type='password'
-                                    fullWidth
-                                    onChange={(e) => setValues({ ...values, password: e.target.value })}
-                                        
-
-                                />
+        //             >
+        //                 <Typography> {error && error}</Typography>
+        //                 <h3> Login</h3>
+        //                 <TextField
+        //                     id="filled-hidden-label-normal"
+        //                     label="Email"
+        //                     variant="standard"
+        //                     type='text'
+        //                     fullWidth
+        //                     onChange={(e) => setValues({ ...values, email: e.target.value })}
+        //                 />
+        //                 <TextField
+        //                     id="filled-hidden-label-normal"
+        //                     label="Password"
+        //                     variant="standard"
+        //                     type='password'
+        //                     fullWidth
+        //                     onChange={(e) => setValues({ ...values, password: e.target.value })}
 
 
-                            </Stack>
-
-                            <Button type='submit' sx={{ mt: 2 }} color='primary' variant='contained' >Submit</Button>
+        //                 />
 
 
-                        </form>
-                    </Card>
+        //             </Stack>
 
-                )
-            }
-            {
-                loginValue === "emp" && (
-                    <Card sx={{
-                        width: "50%",
-                        padding: "5%",
-                        ml: "20%",
-                        bgcolor: "#ebdef0"
-                    }}>
-                         <form action="" onSubmit={handleSubmitEmp}>
-                            <Stack
-                                component="form"
-
-                                spacing={2}
-                                noValidate
-                                autoComplete="off"
-
-                            >
-                                <Typography> {error && error}</Typography>
-                                <h3>EMP Login</h3>
-                                <TextField
-                                    id="filled-hidden-label-normal"
-                                    label="Email"
-                                    variant="standard"
-                                    type='text'
-                                    fullWidth
-                                    onChange={(e) => setValues({ ...values, email: e.target.value })}
-                                />
-                                <TextField
-                                    id="filled-hidden-label-normal"
-                                    label="Password"
-                                    variant="standard"
-                                    type='password'
-                                    fullWidth
-                                    onChange={(e) => setValues({ ...values, password: e.target.value })}
-                                        
-
-                                />
+        //             <Button type='submit' sx={{ mt: 2 }} color='primary' variant='contained' >Submit</Button>
 
 
-                            </Stack>
-
-                            <Button type='submit' sx={{ mt: 2 }} color='primary' variant='contained' >Submit</Button>
-
-
-                        </form>
-                    </Card>
-
-                )
-            }
+        //         </form>
+        //     </Card>
 
 
-        </Box>
+        // </Box>
+
+
+        <Box
+        sx={{
+            minHeight: '100vh',
+            backgroundImage: 'url(https://static.vecteezy.com/system/resources/previews/007/490/829/non_2x/digital-technology-and-engineering-digital-telecoms-concept-hi-tech-futuristic-technology-background-illustration-vector.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 2,
+          }}
+      >
+        <Card
+          sx={{
+            width: 400,
+            padding: 4,
+            boxShadow: 4,
+            borderRadius: 3,
+            bgcolor: 'background.paper',
+          }}
+        >
+          <Typography variant="h5" fontWeight={600} textAlign="center" gutterBottom>
+            Welcome Back 👋
+          </Typography>
+          <Typography variant="body2" color="text.secondary" textAlign="center" mb={3}>
+            Please login to your account
+          </Typography>
+  
+          {error && (
+            <Typography color="error" textAlign="center" mb={2}>
+              {error}
+            </Typography>
+          )}
+  
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={3}>
+              <TextField
+                label="Email"
+                variant="outlined"
+                type="email"
+                fullWidth
+                size="small"
+                onChange={(e) => setValues({ ...values, email: e.target.value })}
+              />
+              <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                fullWidth
+                size="small"
+                onChange={(e) => setValues({ ...values, password: e.target.value })}
+              />
+  
+              <Button type="submit" variant="contained" size="large" color="primary" fullWidth>
+                Login
+              </Button>
+            </Stack>
+          </form>
+  
+          <Typography variant="body2" textAlign="center" mt={2}>
+            Don’t have an account? <Button size="small">Sign Up</Button>
+          </Typography>
+        </Card>
+      </Box>
     )
 }
 
